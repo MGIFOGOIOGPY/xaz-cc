@@ -7,7 +7,9 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'xaz_cc_secret_key_2024_ropd'
-app.config['DATABASE'] = 'cards_database.db'
+
+# استخدام SQLite في الذاكرة للـ Serverless
+app.config['DATABASE'] = ':memory:'
 
 # Initialize database
 def init_db():
@@ -34,6 +36,7 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Initialize database when app starts
 init_db()
 
 def get_db_connection():
@@ -182,7 +185,7 @@ def index():
         <meta property="og:title" content="{XAZ >>{CC • Premium Card Shop">
         <meta property="og:description" content="Exclusive Card Marketplace • 100% Verified • Instant Access">
         <meta property="og:image" content="https://i.imgur.com/cc_preview.png">
-        <meta property="og:url" content="xaz-cc.vercel.app/">
+        <meta property="og:url" content="https://xaz-cc.vercel.app">
         <meta name="twitter:card" content="summary_large_image">
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -775,6 +778,10 @@ def get_stats():
         'empty_frames': empty_frames,
         'last_update': datetime.now().isoformat()
     })
+
+# Handler for Vercel
+def handler(request):
+    return app(request)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
